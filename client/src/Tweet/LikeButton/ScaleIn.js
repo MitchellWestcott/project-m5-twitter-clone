@@ -5,7 +5,7 @@ export const ScaleIn = ({ children }) => {
   const style = useSpring({
     transform: "scale(1)",
     from: {
-      transform: "scale(1.6)",
+      transform: "scale(1.2)",
     },
     config: {
       tension: 180,

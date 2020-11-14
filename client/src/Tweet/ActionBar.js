@@ -1,59 +1,62 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-
+import { ScaleIn } from "./LikeButton/ScaleIn";
 import { FiMessageCircle, FiRepeat, FiHeart, FiUpload } from "react-icons/fi";
+import { FaHeart } from "react-icons/fa";
 
 const ActionBar = (props) => {
-  const { tweetLikes, tweetId, likeTweet } = props;
+  const { tweetId, numLikes } = props;
   const [isLiked, setIsLiked] = useState(false);
-  const [numOfLikes, setNumOfLikes] = useState(null);
-  // console.log({ buttonTest: isLiked, numOfLikes });
+  const [numOfLikes, setNumOfLikes] = useState(numLikes);
 
-  // const handleToggleLike = (e) => {
-  //   e.stopPropagation();
-  //   if (isLiked) {
-  //     setNumOfLikes(numOfLikes - 1);
-  //     setIsLiked(false);
-  //   } else {
-  //     setNumOfLikes(numOfLikes + 1);
-  //     setIsLiked(true);
-  //   }
-  // };
-
-  // console.log(onLikeClick);
-
-  const handleLike = (e) => {
+  const handleToggleLike = (e) => {
     e.stopPropagation();
+    if (isLiked) {
+      setNumOfLikes(numOfLikes - 1);
+      setIsLiked(false);
+    } else {
+      setNumOfLikes(numOfLikes + 1);
+      setIsLiked(true);
+    }
     fetch(`/api/tweet/${tweetId}/like`, {
       method: "PUT",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ like: isLiked }),
-    }).then((res) => res.json());
+      body: JSON.stringify({ like: !isLiked }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
   };
-
-  // const handleKeyDown = (e) => {
-  //   if (e.key === "Enter") {
-  //     e.stopPropagation();
-  //     onLikeClick(e);
-  //   }
-  // };
 
   return (
     <Wrapper>
       <StyledFiMessageCircle tabIndex="0" />
       <StyledFiRepeat tabIndex="0" />
-      <StyledFiHeart
-        onClick={() => {
-          // onLikeClick(tweetId);
-        }}
-        // onClick={handleLike}
-        // onKeyDown={handleKeyDown(tweetId)}
-        tabIndex="0"
-      />
-      {isLiked && <div>wowee</div>}
+      <Div>
+        {isLiked ? (
+          <ScaleIn>
+            <RedFaHeart
+              onClick={(e, tweetId) => {
+                handleToggleLike(e, tweetId);
+              }}
+              tabIndex="0"
+            />
+          </ScaleIn>
+        ) : (
+          <StyledFiHeart
+            onClick={(e, tweetId) => {
+              handleToggleLike(e, tweetId);
+            }}
+            tabIndex="0"
+          />
+        )}
+        {!isLiked && <SpanHidden>00</SpanHidden>}
+        {isLiked && <Span>{numOfLikes}</Span>}
+      </Div>
       <StyledFiUpload tabIndex="0" />
     </Wrapper>
   );
@@ -63,6 +66,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
+  padding: 10px;
   /* margin: 20px 20px 20px 0px; */
 `;
 const StyledFiMessageCircle = styled(FiMessageCircle)`
@@ -95,6 +99,16 @@ const StyledFiHeart = styled(FiHeart)`
     border-radius: 20px;
   }
 `;
+
+const RedFaHeart = styled(FaHeart)`
+  width: 20px;
+  height: 20px;
+  padding: 5px;
+  color: #ff3855;
+  background: #ffccd3;
+  border-radius: 20px;
+`;
+
 const StyledFiUpload = styled(FiUpload)`
   width: 20px;
   height: 20px;
@@ -104,6 +118,21 @@ const StyledFiUpload = styled(FiUpload)`
     background: #d9f4ff;
     border-radius: 20px;
   }
+`;
+
+const SpanHidden = styled.span`
+  color: transparent;
+`;
+const Span = styled.span`
+  color: black;
+  margin-left: 5px;
+`;
+
+const Div = styled.div`
+  width: 60px;
+  height: 40px;
+  align-items: center;
+  display: flex;
 `;
 
 export default ActionBar;

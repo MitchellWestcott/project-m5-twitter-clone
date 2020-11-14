@@ -8,6 +8,7 @@ import { CurrentUserContext } from "./CurrentUserContext";
 const HomeFeed = () => {
   const { currentUser, status } = useContext(CurrentUserContext);
   const [homeFeed, setHomeFeed] = useState([]);
+  const [newTweet, setNewTweet] = useState(0);
 
   useEffect(() => {
     fetch(`/api/me/home-feed`)
@@ -23,14 +24,20 @@ const HomeFeed = () => {
         // console.log("feed array", feedArray.timestamp);
         // console.log({ sortedfeedfromhomefeed: sortedFeed });
       });
-  }, [homeFeed]);
-
+  }, [newTweet]);
+  // console.log(homeFeed);
   return (
     <>
       <Wrapper>
-        <TweetInput user={currentUser} />
+        <TweetInput
+          user={currentUser}
+          newTweet={newTweet}
+          setNewTweet={setNewTweet}
+        />
         {homeFeed.map((tweet) => {
-          return <Tweet tweet={tweet} key={tweet.id} />;
+          return (
+            <Tweet tweet={tweet} key={tweet.id} numLikes={tweet.numLikes} />
+          );
         })}
       </Wrapper>
     </>

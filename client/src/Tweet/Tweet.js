@@ -9,7 +9,8 @@ import { FiRepeat } from "react-icons/fi";
 
 const Tweet = (props) => {
   const [likeTweet, setLikeTweet] = useState(false);
-  const { tweet } = props;
+
+  const { tweet, numLikes } = props;
   let history = useHistory();
 
   const handleTweetId = (e) => {
@@ -28,7 +29,7 @@ const Tweet = (props) => {
     }
   };
 
-  // console.log({ tweetInfoFromTweet: tweet.id });
+  console.log({ tweetInfoFromTweet: tweet.numLikes });
 
   return (
     <Wrapper onKeyDown={handleKeyDown} onClick={handleTweetId} tabIndex="0">
@@ -47,11 +48,7 @@ const Tweet = (props) => {
         />
         <TweetContents>{tweet.status}</TweetContents>
         {tweetImage && <TweetImage src={tweetImage}></TweetImage>}
-        <ActionBar
-          tweetLikes={tweet.numLikes}
-          tweetId={tweet.id}
-          likeTweet={likeTweet}
-        />
+        <ActionBar tweetId={tweet.id} numLikes={numLikes} />
       </WrapperTwo>
     </Wrapper>
   );

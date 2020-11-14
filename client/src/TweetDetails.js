@@ -11,6 +11,7 @@ const TweetDetails = () => {
   const [currentTweet, setCurrentTweet] = useState(null);
   const [status, setStatus] = useState("loading");
   const { tweetId } = useParams();
+  const [numLikes, setNumLikes] = useState(null);
 
   const history = useHistory();
 
@@ -32,6 +33,7 @@ const TweetDetails = () => {
         if (data) {
           setCurrentTweet(data.tweet);
           setStatus("idle");
+          setNumLikes(data?.tweet?.numLikes);
         }
       });
   }, [tweetId]);
@@ -111,7 +113,7 @@ const TweetDetails = () => {
               </LikesSection>
               <Divider />
               <ActionBarWrapper>
-                <ActionBar />
+                <ActionBar numLikes={numLikes} />
               </ActionBarWrapper>
               <Divider />
             </Wrapper>

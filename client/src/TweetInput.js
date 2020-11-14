@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { COLORS } from "./constants";
 
-const TweetInput = ({ user }) => {
+const TweetInput = (props) => {
+  const { user, newTweet, setNewTweet } = props;
   const [charCount, setCharCount] = useState(280);
   const [maxedChar, setMaxedChar] = useState(false);
   const [tweetContents, setTweetContents] = useState("");
@@ -40,7 +41,7 @@ const TweetInput = ({ user }) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        // console.log({ datafromtweentinput: data });
+        setNewTweet(newTweet + 1);
       });
   };
 

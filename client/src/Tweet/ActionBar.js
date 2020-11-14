@@ -5,8 +5,8 @@ import { FiMessageCircle, FiRepeat, FiHeart, FiUpload } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 
 const ActionBar = (props) => {
-  const { tweetId, numLikes } = props;
-  const [isLiked, setIsLiked] = useState(false);
+  const { tweetId, numLikes, tweetLiked } = props;
+  const [isLiked, setIsLiked] = useState(tweetLiked);
   const [numOfLikes, setNumOfLikes] = useState(numLikes);
 
   const handleToggleLike = (e) => {
@@ -34,7 +34,7 @@ const ActionBar = (props) => {
 
   return (
     <Wrapper>
-      <StyledFiMessageCircle tabIndex="0" />
+      <StyledFiMessageCircle tabIndex="0" aria-label="Message user" />
       <StyledFiRepeat tabIndex="0" />
       <Div>
         {isLiked ? (
@@ -44,6 +44,7 @@ const ActionBar = (props) => {
                 handleToggleLike(e, tweetId);
               }}
               tabIndex="0"
+              aria-label="Liked tweet"
             />
           </ScaleIn>
         ) : (
@@ -52,12 +53,13 @@ const ActionBar = (props) => {
               handleToggleLike(e, tweetId);
             }}
             tabIndex="0"
+            aria-label="Like tweet"
           />
         )}
         {!isLiked && <SpanHidden>00</SpanHidden>}
         {isLiked && <Span>{numOfLikes}</Span>}
       </Div>
-      <StyledFiUpload tabIndex="0" />
+      <StyledFiUpload tabIndex="0" aria-label="Forward tweet" />
     </Wrapper>
   );
 };

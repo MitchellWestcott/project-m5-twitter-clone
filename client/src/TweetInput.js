@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { COLORS } from "./constants";
+import Loader from "./Tweet/Loader";
 
 const TweetInput = (props) => {
   const { user, newTweet, setNewTweet } = props;
@@ -27,7 +28,7 @@ const TweetInput = (props) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setTweetStatus("loading");
+    setTweetStatus("idle");
     setTweetContents("");
     setCharCount(280);
     document.getElementById("input").value = "";
@@ -46,32 +47,38 @@ const TweetInput = (props) => {
   };
 
   return (
-    <Wrapper>
-      <AvatarWrapper>
-        <Avatar src={user?.avatarSrc} />
-      </AvatarWrapper>
-      <InputWrapper>
-        <TweetForm onSubmit={handleSubmit}>
-          <Input
-            type="text"
-            id="input"
-            autoComplete="off"
-            placeholder={"What's happening?"}
-            onInput={handleCharCount}
-          ></Input>
-          <Characters>
-            {charCount >= 56 && <NormalFont>{charCount}</NormalFont>}
-            {charCount <= 55 && charCount >= 0 && (
-              <WarningFont>{charCount}</WarningFont>
-            )}
-            {charCount < 0 && <RedFont>{charCount}</RedFont>}
-            <Submit type="submit" disabled={maxedChar}>
-              Meow
-            </Submit>
-          </Characters>
-        </TweetForm>
-      </InputWrapper>
-    </Wrapper>
+    <>
+      {!tweetStatus ? (
+        <Loader />
+      ) : (
+        <Wrapper>
+          <AvatarWrapper>
+            <Avatar src={user?.avatarSrc} />
+          </AvatarWrapper>
+          <InputWrapper>
+            <TweetForm onSubmit={handleSubmit}>
+              <Input
+                type="text"
+                id="input"
+                autoComplete="off"
+                placeholder={"What's happening?"}
+                onInput={handleCharCount}
+              ></Input>
+              <Characters>
+                {charCount >= 56 && <NormalFont>{charCount}</NormalFont>}
+                {charCount <= 55 && charCount >= 0 && (
+                  <WarningFont>{charCount}</WarningFont>
+                )}
+                {charCount < 0 && <RedFont>{charCount}</RedFont>}
+                <Submit type="submit" disabled={maxedChar}>
+                  Meow
+                </Submit>
+              </Characters>
+            </TweetForm>
+          </InputWrapper>
+        </Wrapper>
+      )}
+    </>
   );
 };
 

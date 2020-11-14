@@ -25,10 +25,18 @@ const Header = (props) => {
   return (
     <Wrapper>
       <Name>
-        <DisplayName onClick={handleClick} onKeyDown={handleKeyDown}>
+        <DisplayName
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
+          aria-label="Go to user's page"
+        >
           {author}
         </DisplayName>
-        <Username onClick={handleClick} onKeyDown={handleKeyDown}>
+        <Username
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
+          aria-label="Go to user's page"
+        >
           @{handle}
         </Username>
         <TimeStamp>{moment(timestamp).startOf("day").fromNow()}</TimeStamp>
@@ -59,6 +67,9 @@ const DisplayName = styled.div`
   text-decoration: none;
   &:visited {
     color: black;
+  }
+  &:hover {
+    cursor: pointer;
   }
 `;
 

@@ -6,16 +6,18 @@ import moment from "moment";
 import { COLORS } from "../src/constants";
 import Tweet from "./Tweet/Tweet";
 import { FiMapPin, FiCalendar } from "react-icons/fi";
+import Loader from "./Tweet/Loader";
+import ErrorPage from "./ErrorPage";
 
 const Profile = () => {
-  const { currentUser, status } = useContext(CurrentUserContext);
   const { profileId } = useParams();
   const [currentProfile, setCurrentProfile] = useState(null);
   const [profileStatus, setProfileStatus] = useState("loading");
   const [currentTweets, setCurrentTweets] = useState(null);
   const [tweetStatus, setTweetStatus] = useState("loading");
 
-  console.log("current profile", currentProfile);
+  // console.log("current profile", currentProfile);
+
   useEffect(() => {
     fetch(`/api/${profileId}/profile`)
       .then((res) => {
@@ -25,6 +27,9 @@ const Profile = () => {
         setCurrentProfile(data.profile);
         setProfileStatus("idle");
         // console.log("profile", data.profile);
+      })
+      .catch((error) => {
+        setProfileStatus("error");
       });
   }, [profileId]);
 
@@ -34,13 +39,16 @@ const Profile = () => {
         return res.json();
       })
       .then((data) => {
-        console.log({ datafromprofile: data });
+        // console.log({ datafromprofile: data });
         const tweets = Object.values(data.tweetsById);
         const sortedTweets = tweets.sort((a, b) =>
           a.timestamp < b.timestamp ? 1 : b.timestamp < a.timestamp ? -1 : 0
         );
         setCurrentTweets(sortedTweets);
         setTweetStatus("idle");
+      })
+      .catch((error) => {
+        setTweetStatus("error");
       });
   }, [profileId]);
 
@@ -48,50 +56,63 @@ const Profile = () => {
 
   return (
     <>
-      {!currentProfile || profileStatus === "loading" ? (
-        <p>Loading</p>
+      {!currentProfile || profileStatus === "error" ? (
+        <ErrorPage />
       ) : (
-        <Wrapper>
-          <PictureWrapper>
-            <BannerWrapper>
-              <Banner src={currentProfile.bannerSrc} />
-            </BannerWrapper>
-            <Avatar src={currentProfile.avatarSrc} />
-          </PictureWrapper>
-          <ProfileWrapper>
-            <User>
-              <DisplayName>{currentProfile.displayName}</DisplayName>
-              <UserHandle>@{currentProfile.handle}</UserHandle>
-              <Bio>{currentProfile.bio}</Bio>
-              <DataWrapper>
-                <StyledFiLocation />
-                <Span>{currentProfile.location}</Span>
-                <StyledFiCalendar />
-                <Span>
-                  Joined {moment(currentProfile.joined).format("MMMM YYYY")}
-                </Span>
-              </DataWrapper>
-              <FollowWrapper>
-                <Followers>
-                  {currentProfile.numFollowing}{" "}
-                  <FollowersSpan>Following</FollowersSpan>
-                </Followers>
-                <Followers>
-                  {currentProfile.numFollowers}{" "}
-                  <FollowersSpan>Followers</FollowersSpan>
-                </Followers>
-              </FollowWrapper>
-            </User>
-            <ButtonWrapper>
-              <Button>Tweets</Button>
-              <Button>Media</Button>
-              <Button>Likes</Button>
-            </ButtonWrapper>
-          </ProfileWrapper>
-          {currentTweets?.map((tweet) => {
-            return <Tweet tweet={tweet} key={tweet.id} />;
-          })}
-        </Wrapper>
+        <>
+          {!currentProfile || profileStatus === "loading" ? (
+            <Loader />
+          ) : (
+            <Wrapper>
+              <PictureWrapper>
+                <BannerWrapper>
+                  <Banner src={currentProfile.bannerSrc} />
+                </BannerWrapper>
+                <Avatar src={currentProfile.avatarSrc} />
+              </PictureWrapper>
+              <ProfileWrapper>
+                <User>
+                  <DisplayName>{currentProfile.displayName}</DisplayName>
+                  <UserHandle>@{currentProfile.handle}</UserHandle>
+                  <Bio>{currentProfile.bio}</Bio>
+                  <DataWrapper>
+                    <StyledFiLocation />
+                    <Span>{currentProfile.location}</Span>
+                    <StyledFiCalendar />
+                    <Span>
+                      Joined {moment(currentProfile.joined).format("MMMM YYYY")}
+                    </Span>
+                  </DataWrapper>
+                  <FollowWrapper>
+                    <Followers>
+                      {currentProfile.numFollowing}{" "}
+                      <FollowersSpan>Following</FollowersSpan>
+                    </Followers>
+                    <Followers>
+                      {currentProfile.numFollowers}{" "}
+                      <FollowersSpan>Followers</FollowersSpan>
+                    </Followers>
+                  </FollowWrapper>
+                </User>
+                <ButtonWrapper>
+                  <Button aria-label="Tweets posted">Tweets</Button>
+                  <Button aria-label="Media shared">Media</Button>
+                  <Button aria-label="Tweets liked">Likes</Button>
+                </ButtonWrapper>
+              </ProfileWrapper>
+              {currentTweets?.map((tweet) => {
+                return (
+                  <Tweet
+                    tweet={tweet}
+                    key={tweet.id}
+                    tweetLiked={tweet.isLiked}
+                    numLikes={tweet.numLikes}
+                  />
+                );
+              })}
+            </Wrapper>
+          )}
+        </>
       )}
     </>
   );

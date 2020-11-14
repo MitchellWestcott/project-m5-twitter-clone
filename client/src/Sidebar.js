@@ -8,7 +8,7 @@ import { COLORS } from "./constants";
 
 import { ReactComponent as Logo } from "./assets/logo.svg";
 
-import { FaCat } from "react-icons/fa";
+import { GiBlackCat } from "react-icons/gi";
 import { FiHome, FiUser, FiBell, FiBookmark } from "react-icons/fi";
 
 const Sidebar = () => {
@@ -18,30 +18,30 @@ const Sidebar = () => {
     <>
       <Main>
         <Wrapper>
-          <StyledNavLinkTwo to="/home">
-            <StyledLogo />
+          <StyledNavLinkTwo to="/home" aria-label="Home">
+            <StyledGiBlackCat />
           </StyledNavLinkTwo>
         </Wrapper>
         <Div>
-          <StyledNavLink to="/home">
+          <StyledNavLink to="/home" aria-label="Home">
             <StyledFiHome />
             <Span>Home</Span>
           </StyledNavLink>
         </Div>
         <Div>
-          <StyledNavLink to={`/${currentUser?.handle}`}>
+          <StyledNavLink to={`/${currentUser?.handle}`} aria-label="My Profile">
             <StyledFiUser />
             <Span>Profile</Span>
           </StyledNavLink>
         </Div>
         <Div>
-          <StyledNavLink to="/notifications">
+          <StyledNavLink to="/notifications" aria-label="Notifications">
             <StyledFiBell />
             <Span>Notifications</Span>
           </StyledNavLink>
         </Div>
         <Div>
-          <StyledNavLink to="/bookmarks">
+          <StyledNavLink to="/bookmarks" aria-label="Bookmarks">
             <StyledFiBookmark />
             <Span>Bookmarks</Span>
           </StyledNavLink>
@@ -79,6 +79,19 @@ const StyledLogo = styled(Logo)`
   &:hover {
     background: ${COLORS.light};
     border-radius: 50%;
+  }
+`;
+
+const StyledGiBlackCat = styled(GiBlackCat)`
+  height: 28px;
+  width: 28px;
+  color: black;
+  padding: 8px;
+
+  &:hover {
+    background: ${COLORS.light};
+    border-radius: 50%;
+    color: ${COLORS.linkbackground};
   }
 `;
 

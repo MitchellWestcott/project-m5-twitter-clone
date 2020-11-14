@@ -18,6 +18,10 @@ export const CurrentUserProvider = ({ children }) => {
         setCurrentUser(data.profile);
         setStatus("idle");
         // console.log(data);
+      })
+      .catch((error) => {
+        setStatus("error");
+        // console.log("hello");
       });
   }, []);
 

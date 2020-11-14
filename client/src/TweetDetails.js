@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import moment from "moment";
+import Loader from "./Tweet/Loader";
 
 import ActionBar from "./Tweet/ActionBar";
 import { VscArrowLeft } from "react-icons/vsc";
@@ -12,6 +13,7 @@ const TweetDetails = () => {
   const [status, setStatus] = useState("loading");
   const { tweetId } = useParams();
   const [numLikes, setNumLikes] = useState(null);
+  const [tweetLiked, setTweetLiked] = useState(null);
 
   const history = useHistory();
 
@@ -34,6 +36,7 @@ const TweetDetails = () => {
           setCurrentTweet(data.tweet);
           setStatus("idle");
           setNumLikes(data?.tweet?.numLikes);
+          setTweetLiked(data?.tweet?.isLiked);
         }
       });
   }, [tweetId]);
@@ -42,7 +45,7 @@ const TweetDetails = () => {
     return media.url;
   });
 
-  console.log({ currentTweetInfo: currentTweet });
+  // console.log({ currentTweetInfo: currentTweet });
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -61,7 +64,7 @@ const TweetDetails = () => {
   return (
     <>
       {status === "loading" ? (
-        <p>loading</p>
+        <Loader />
       ) : (
         <>
           <Div>
@@ -71,6 +74,7 @@ const TweetDetails = () => {
                   onClick={handleGoBack}
                   onKeyDown={handleKeyDown}
                   tabIndex="0"
+                  aria-label="Go back"
                 />
               </ChevronDiv>
 
@@ -85,6 +89,7 @@ const TweetDetails = () => {
                     onClick={handleClick}
                     onKeyDown={handleKeyDownUser}
                     tabIndex={0}
+                    aria-label="Go to user's profile"
                   >
                     {currentTweet?.author?.displayName}
                   </Name>
@@ -100,7 +105,7 @@ const TweetDetails = () => {
                 </TimeStamp>
                 <AppSpan> Critter Web App</AppSpan>
               </DateWrapper>
-              <Divider />
+              {/* <Divider />
               <LikesSection>
                 <LikeNumber>
                   {currentTweet?.numLikes}
@@ -110,10 +115,14 @@ const TweetDetails = () => {
                   {currentTweet?.numRetweets}
                   <RetweetText> Retweets</RetweetText>
                 </RetweetNumber>
-              </LikesSection>
+              </LikesSection> */}
               <Divider />
               <ActionBarWrapper>
-                <ActionBar numLikes={numLikes} />
+                <ActionBar
+                  tweetLiked={currentTweet.isLiked}
+                  numLikes={currentTweet.numLikes}
+                  tweetId={tweetId}
+                />
               </ActionBarWrapper>
               <Divider />
             </Wrapper>

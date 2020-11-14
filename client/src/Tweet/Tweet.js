@@ -2,15 +2,18 @@ import React, { useState } from "react";
 import Header from "./Header";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
+import Loader from "./Loader";
 
 import ActionBar from "./ActionBar";
 
 import { FiRepeat } from "react-icons/fi";
+import ErrorPage from "../ErrorPage";
 
 const Tweet = (props) => {
+  const { tweet, numLikes, tweetLiked, status } = props;
   const [likeTweet, setLikeTweet] = useState(false);
+  const [tweetStatus, setTweetStatus] = useState(status);
 
-  const { tweet, numLikes } = props;
   let history = useHistory();
 
   const handleTweetId = (e) => {
@@ -29,28 +32,49 @@ const Tweet = (props) => {
     }
   };
 
-  console.log({ tweetInfoFromTweet: tweet.numLikes });
+  // console.log({ tweetInfoFromTweet: tweet.numLikes });
 
   return (
-    <Wrapper onKeyDown={handleKeyDown} onClick={handleTweetId} tabIndex="0">
-      <ImageWrapper>
-        {tweet.retweetFrom && <StyledFiRepeat />}
-        <Avatar src={tweet.author.avatarSrc} />
-      </ImageWrapper>
-      <WrapperTwo>
-        {tweet.retweetFrom && (
-          <Retweet>{tweet.retweetFrom.displayName} remeowed</Retweet>
-        )}
-        <Header
-          author={tweet.author.displayName}
-          handle={tweet.author.handle}
-          timestamp={tweet.timestamp}
-        />
-        <TweetContents>{tweet.status}</TweetContents>
-        {tweetImage && <TweetImage src={tweetImage}></TweetImage>}
-        <ActionBar tweetId={tweet.id} numLikes={numLikes} />
-      </WrapperTwo>
-    </Wrapper>
+    <>
+      {tweetStatus === "error" ? (
+        <ErrorPage />
+      ) : (
+        <>
+          {tweetStatus === "loading" ? (
+            <Loader />
+          ) : (
+            <Wrapper
+              onKeyDown={handleKeyDown}
+              onClick={handleTweetId}
+              tabIndex="0"
+              aria-label="Go to tweet details"
+            >
+              <ImageWrapper>
+                {tweet.retweetFrom && <StyledFiRepeat />}
+                <Avatar src={tweet.author.avatarSrc} />
+              </ImageWrapper>
+              <WrapperTwo>
+                {tweet.retweetFrom && (
+                  <Retweet>{tweet.retweetFrom.displayName} remeowed</Retweet>
+                )}
+                <Header
+                  author={tweet.author.displayName}
+                  handle={tweet.author.handle}
+                  timestamp={tweet.timestamp}
+                />
+                <TweetContents>{tweet.status}</TweetContents>
+                {tweetImage && <TweetImage src={tweetImage}></TweetImage>}
+                <ActionBar
+                  tweetId={tweet.id}
+                  numLikes={numLikes}
+                  tweetLiked={tweetLiked}
+                />
+              </WrapperTwo>
+            </Wrapper>
+          )}
+        </>
+      )}
+    </>
   );
 };
 
@@ -94,6 +118,7 @@ const TweetContents = styled.div`
   width: 100%;
   margin-bottom: 10px;
   line-height: 26px;
+  padding: 5px;
 `;
 
 const TweetImage = styled.img`
